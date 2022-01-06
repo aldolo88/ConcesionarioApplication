@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.concesionarioapplication.ui.theme.EmployeesListScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -208,7 +209,8 @@ fun Navigation(navController: NavHostController) {
             HomeScreen()
         }
         composable(NavDrawerItem.Employees.route) {
-            EmployeesScreen()
+            EmployeesListScreen(navController=navController)
+        //EmployeesScreen()
         }
         composable(NavDrawerItem.Others.route) {
             OthersScreen()
