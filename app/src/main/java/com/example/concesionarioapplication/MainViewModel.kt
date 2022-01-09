@@ -15,11 +15,4 @@ class MainViewModel : ViewModel() {
     fun setCurrentScreen(screen: Screens) {
         _currentScreen.value = screen
     }
-
-    private val _clickCount = MutableLiveData(0)
-    val clickCount: LiveData<Int> = _clickCount
-
-    fun updateClick(value: Int) {
-        _clickCount.value = value
-    }
 }

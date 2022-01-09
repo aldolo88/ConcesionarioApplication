@@ -63,17 +63,6 @@ fun AppScaffold() {
             }
         )
     }
-    if (currentScreen == Screens.DrawerScreens.Help) {
-        topBar = {
-            TopBar(
-                title = Screens.DrawerScreens.Help.title,
-                buttonIcon = Icons.Filled.ArrowBack,
-                onButtonClicked = {
-                    navController.popBackStack()
-                }
-            )
-        }
-    }
 
     Scaffold(
         topBar = {

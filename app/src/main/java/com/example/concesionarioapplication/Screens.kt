@@ -8,19 +8,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screens(val route: String, val title: String) {
-
-    sealed class HomeScreens(
-        route: String,
-        title: String,
-        val icon: ImageVector
-    ) : Screens(
-        route,
-        title
-    ) {
-    }
 
     sealed class DrawerScreens(
         route: String,
