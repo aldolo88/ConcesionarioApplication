@@ -93,7 +93,10 @@ fun NavigationHost(navController: NavController, viewModel: MainViewModel) {
     ) {
         composable(Screens.DrawerScreens.Home.route) { Home(viewModel = viewModel) }
         composable(Screens.DrawerScreens.Account.route) { Account(viewModel = viewModel) }
-        composable(Screens.DrawerScreens.Help.route) { Help(viewModel = viewModel) }
+        composable(Screens.DrawerScreens.Help.route) { Help(viewModel = viewModel)}
+        composable(Screens.DrawerScreens.Employees.route) {
+            viewModel.getEmployeeList()
+            Employees(viewModel = viewModel, employeeList = viewModel.employeeListResponse) }
     }
 }
 
