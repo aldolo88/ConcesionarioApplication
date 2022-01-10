@@ -3,215 +3,107 @@ package com.example.concesionarioapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.CoroutineScope
+import com.example.concesionarioapplication.ui.theme.NavigationDrawerTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen()
+            NavigationDrawerTheme {
+                CompositionLocalProvider(LocalBackPressedDispatcher provides this.onBackPressedDispatcher) {
+                    AppScaffold()
+                }
+            }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
-    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    val scope = rememberCoroutineScope()
+fun AppScaffold() {
+    val viewModel: MainViewModel = viewModel()
     val navController = rememberNavController()
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+    val currentScreen by viewModel.currentScreen.observeAsState()
 
-    Scaffold(
-        scaffoldState=scaffoldState,
-        topBar = {},
-        drawerBackgroundColor = colorResource(id=R.color.design_default_color_primary),
-        drawerContent = {
-            Drawer(scope = scope, scaffoldState = scaffoldState, navController = navController)
-        },
-    ){Navigation(navController = navController)}
-}
+    if (scaffoldState.drawerState.isOpen) {
+        BackPressHandler {
+            scope.launch {
+                scaffoldState.drawerState.close()
+            }
+        }
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
-}
-
-@Composable
-fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState){
-    TopAppBar(
-        title = {Text(text= stringResource(R.string.app_name), fontSize = 18.sp)},
-        navigationIcon = {
-            IconButton(onClick = {
+    var topBar : @Composable () -> Unit = {
+        TopBar(
+            title = currentScreen!!.title,
+            buttonIcon = Icons.Filled.Menu,
+            onButtonClicked = {
                 scope.launch {
                     scaffoldState.drawerState.open()
                 }
-            }) {
-                Icon(Icons.Filled.Menu,"")
             }
+        )
+    }
+
+    Scaffold(
+        topBar = {
+            topBar()
         },
-        backgroundColor = colorResource(id=R.color.design_default_color_primary),
-        contentColor = Color.White
-    )
-}
-
-@Preview(showBackground = false)
-@Composable
-fun TopBarPreview(){
-    val scope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    TopBar(scope=scope, scaffoldState=scaffoldState)
-}
-
-@Composable
-fun Drawer(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: NavController){
-    val items = listOf(
-        NavDrawerItem.Home,
-        NavDrawerItem.Employees,
-        NavDrawerItem.Others
-    )
-    Column(
-        modifier = Modifier.background(colorResource(id=R.color.design_default_color_primary))
-    ){
-        //Header
-        Image(
-            painter = painterResource(id=R.drawable.logo),
-            contentDescription = R.drawable.logo.toString(),
-            modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
-        //Space between
-        Spacer(
-            modifier=Modifier.fillMaxWidth().height(5.dp)
-        )
-        //List of navigation items
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        items.forEach { item ->
-            DrawerItem(item = item, selected = currentRoute == item.route, onItemClick = {
-                navController.navigate(item.route) {
-                    // Pop up to the start destination of the graph to
-                    // avoid building up a large stack of destinations
-                    // on the back stack as users select items
-                    navController.graph.startDestinationRoute?.let { route ->
-                        popUpTo(route) {
-                            saveState = true
-                        }
-                    }
-                    // Avoid multiple copies of the same destination when
-                    // reselecting the same item
-                    launchSingleTop = true
-                    // Restore state when reselecting a previously selected item
-                    restoreState = true
-                }
-                // Close drawer
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            Drawer { route ->
                 scope.launch {
                     scaffoldState.drawerState.close()
                 }
-            })
-
-        }
-        Spacer(modifier=Modifier.weight(1f))
-        Text(
-            text="Aplicación para concesionario",
-            color=Color.White,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(12.dp)
-                .align(Alignment.CenterHorizontally)
-        )
+                navController.navigate(route) {
+                    launchSingleTop = true
+                }
+            }
+        },
+        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
+    ) { innerPadding ->
+        NavigationHost(navController = navController, viewModel = viewModel)
     }
 }
 
+@Composable
+fun NavigationHost(navController: NavController, viewModel: MainViewModel) {
+    NavHost(
+        navController = navController as NavHostController,
+        startDestination = Screens.DrawerScreens.Home.route
+    ) {
+        composable(Screens.DrawerScreens.Home.route) { Home(viewModel = viewModel) }
+        composable(Screens.DrawerScreens.Account.route) { Account(viewModel = viewModel) }
+        composable(Screens.DrawerScreens.Help.route) { Help(viewModel = viewModel)}
+        composable(Screens.DrawerScreens.Employees.route) {
+            viewModel.getEmployeeList()
+            Employees(viewModel = viewModel, employeeList = viewModel.employeeListResponse) }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
-fun DrawerPreview() {
-    val scope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    val navController = rememberNavController()
-    Drawer(scope = scope, scaffoldState = scaffoldState, navController = navController)
-}
-
-@Composable
-fun DrawerItem(item: NavDrawerItem, selected: Boolean, onItemClick: (NavDrawerItem) -> Unit) {
-    val background = if (selected) R.color.design_default_color_primary_dark else android.R.color.transparent
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = { onItemClick(item) })
-            .height(45.dp)
-            .background(colorResource(id = background))
-            .padding(start = 10.dp)
-    ) {
-        Image(
-            painter = painterResource(id = item.icon),
-            contentDescription = item.title,
-            colorFilter = ColorFilter.tint(Color.White),
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .height(35.dp)
-                .width(35.dp)
-        )
-        Spacer(modifier = Modifier.width(7.dp))
-        Text(
-            text = item.title,
-            fontSize = 18.sp,
-            color = Color.White
-        )
-    }
-}
-
-@Preview(showBackground = false)
-@Composable
-fun DrawerItemPreview() {
-    DrawerItem(item = NavDrawerItem.Home, selected = false, onItemClick = {})
-}
-
-@Composable
-fun Navigation(navController: NavHostController) {
-    NavHost(navController, startDestination = NavDrawerItem.Home.route) {
-        composable(NavDrawerItem.Home.route) {
-            HomeScreen()
-        }
-        composable(NavDrawerItem.Employees.route) {
-            EmployeesScreen()
-        }
-        composable(NavDrawerItem.Others.route) {
-            OthersScreen()
-        }
+fun DefaultPreview() {
+    NavigationDrawerTheme {
+        AppScaffold()
     }
 }
