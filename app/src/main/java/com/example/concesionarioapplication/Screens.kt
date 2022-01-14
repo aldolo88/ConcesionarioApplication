@@ -1,6 +1,5 @@
 package com.example.concesionarioapplication
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -12,7 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.concesionarioapplication.ui.theme.JetpackComposeMVVMRetrofitAndRecyclerviewTheme
 
@@ -78,50 +77,45 @@ fun EmployeeItem(employee: Employee) {
         modifier = Modifier
             .padding(8.dp, 4.dp)
             .fillMaxWidth()
-            .height(110.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
+            .height(50.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
     ) {
         Surface() {
-
             Row(
-                Modifier
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
                     .padding(4.dp)
                     .fillMaxSize()
             ) {
-
                 Column(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .padding(4.dp)
                         .fillMaxHeight()
-                        .weight(0.8f)
+                        .weight(0.5f)
                 ) {
-
-                    Text(
-                        text = employee.id.toString(),
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .background(
-                                Color.LightGray
-                            )
-                            .padding(4.dp)
-                    )
                     Text(
                         text = employee.name,
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.subtitle1,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .background(
-                                Color.LightGray
-                            )
                             .padding(4.dp)
+                            .fillMaxSize()
                     )
+                }
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxHeight()
+                        .weight(0.5f)
+                ) {
                     Text(
                         text = employee.role,
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.subtitle1,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .background(
-                                Color.LightGray
-                            )
                             .padding(4.dp)
+                            .fillMaxSize()
                     )
 
                 }
@@ -133,9 +127,60 @@ fun EmployeeItem(employee: Employee) {
 
 @Composable
 fun EmployeeList(employeeList: List<Employee>) {
-    LazyColumn {
-        itemsIndexed(items = employeeList) { index, item ->
-            EmployeeItem(employee=item)
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .weight(0.1f)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxHeight()
+                    .weight(0.5f)
+            ) {
+                Text(
+                    text = "Nombre",
+                    style = MaterialTheme.typography.subtitle1,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxSize()
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxHeight()
+                    .weight(0.5f)
+            ) {
+                Text(
+                    text = "Rol",
+                    style = MaterialTheme.typography.subtitle1,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxSize()
+                )
+
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
+                .weight(0.9f)
+        ) {
+            LazyColumn {
+                itemsIndexed(items = employeeList) { index, item ->
+                    EmployeeItem(employee = item)
+                }
+            }
         }
     }
 }
