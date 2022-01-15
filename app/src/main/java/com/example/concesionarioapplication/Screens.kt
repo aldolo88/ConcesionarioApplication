@@ -91,7 +91,7 @@ fun EmployeeItem(employee: Employee) {
                     modifier = Modifier
                         .padding(4.dp)
                         .fillMaxHeight()
-                        .weight(0.5f)
+                        .weight(1f)
                 ) {
                     Text(
                         text = employee.name,
@@ -107,7 +107,7 @@ fun EmployeeItem(employee: Employee) {
                     modifier = Modifier
                         .padding(4.dp)
                         .fillMaxHeight()
-                        .weight(0.5f)
+                        .weight(1f)
                 ) {
                     Text(
                         text = employee.role,
@@ -117,12 +117,10 @@ fun EmployeeItem(employee: Employee) {
                             .padding(4.dp)
                             .fillMaxSize()
                     )
-
                 }
             }
         }
     }
-
 }
 
 @Composable
@@ -135,40 +133,43 @@ fun EmployeeList(employeeList: List<Employee>) {
                 .fillMaxWidth()
                 .weight(0.1f)
         ) {
-            Column(
+            /*Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxHeight()
-                    .weight(0.5f)
-            ) {
+                    .weight(1f)
+            ) {*/
                 Text(
                     text = "Nombre",
                     style = MaterialTheme.typography.subtitle1,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(4.dp)
-                        .fillMaxSize()
+                        //.fillMaxSize()
+                        .fillMaxHeight()
+                        .weight(1f)
                 )
-            }
+            /*}
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxHeight()
-                    .weight(0.5f)
-            ) {
+                    .weight(1f)
+            ) {*/
                 Text(
                     text = "Rol",
                     style = MaterialTheme.typography.subtitle1,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(4.dp)
-                        .fillMaxSize()
+                        //.fillMaxSize()
+                        .fillMaxHeight()
+                        .weight(1f)
                 )
-
             }
-        }
+        //}
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
