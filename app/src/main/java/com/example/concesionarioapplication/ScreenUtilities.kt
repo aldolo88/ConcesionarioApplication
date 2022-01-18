@@ -20,6 +20,6 @@ fun RowScope.TableCell(
         modifier = Modifier
             .weight(weight)
             .padding(8.dp)
+            .fillMaxHeight()
     )
 }
-

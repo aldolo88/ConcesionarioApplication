@@ -1,5 +1,7 @@
 package com.example.concesionarioapplication
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -11,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.concesionarioapplication.ui.theme.JetpackComposeMVVMRetrofitAndRecyclerviewTheme
@@ -86,96 +89,39 @@ fun EmployeeItem(employee: Employee) {
                     .padding(4.dp)
                     .fillMaxSize()
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxHeight()
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = employee.name,
-                        style = MaterialTheme.typography.subtitle1,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxSize()
-                    )
-                }
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxHeight()
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = employee.role,
-                        style = MaterialTheme.typography.subtitle1,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxSize()
-                    )
-                }
+                TableCell(employee.name, 1f)
+                TableCell(employee.role, 1f)
             }
         }
     }
 }
 
+
+
 @Composable
 fun EmployeeList(employeeList: List<Employee>) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier=Modifier
+            .fillMaxSize()
+    ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
                 .weight(0.1f)
+                .padding(4.dp)
+                .fillMaxWidth()
+                .border(border= BorderStroke(1.dp, Color.Black))
         ) {
-            /*Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxHeight()
-                    .weight(1f)
-            ) {*/
-                Text(
-                    text = "Nombre",
-                    style = MaterialTheme.typography.subtitle1,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        //.fillMaxSize()
-                        .fillMaxHeight()
-                        .weight(1f)
-                )
-            /*}
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxHeight()
-                    .weight(1f)
-            ) {*/
-                Text(
-                    text = "Rol",
-                    style = MaterialTheme.typography.subtitle1,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        //.fillMaxSize()
-                        .fillMaxHeight()
-                        .weight(1f)
-                )
-            }
-        //}
+            TableCell("Nombre", 1F)
+            TableCell("Rol", 1F)
+        }
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
+                .weight(0.9f)
                 .padding(4.dp)
                 .fillMaxWidth()
-                .weight(0.9f)
         ) {
             LazyColumn {
                 itemsIndexed(items = employeeList) { index, item ->
