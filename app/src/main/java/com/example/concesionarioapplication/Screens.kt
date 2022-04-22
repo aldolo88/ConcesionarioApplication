@@ -1,20 +1,20 @@
 package com.example.concesionarioapplication
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.concesionarioapplication.ui.theme.JetpackComposeMVVMRetrofitAndRecyclerviewTheme
 
 sealed class Screens(val route: String, val title: String) {
 
@@ -78,76 +78,63 @@ fun EmployeeItem(employee: Employee) {
         modifier = Modifier
             .padding(8.dp, 4.dp)
             .fillMaxWidth()
-            .height(110.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
+            .height(50.dp), shape = RoundedCornerShape(8.dp), elevation = 4.dp
     ) {
         Surface() {
-
             Row(
-                Modifier
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
                     .padding(4.dp)
                     .fillMaxSize()
             ) {
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxHeight()
-                        .weight(0.8f)
-                ) {
-
-                    Text(
-                        text = employee.id.toString(),
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .background(
-                                Color.LightGray
-                            )
-                            .padding(4.dp)
-                    )
-                    Text(
-                        text = employee.name,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .background(
-                                Color.LightGray
-                            )
-                            .padding(4.dp)
-                    )
-                    Text(
-                        text = employee.role,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .background(
-                                Color.LightGray
-                            )
-                            .padding(4.dp)
-                    )
-
-                }
+                TableCell(employee.name, 1f)
+                TableCell(employee.role, 1f)
             }
         }
     }
-
 }
 
 @Composable
 fun EmployeeList(employeeList: List<Employee>) {
-    LazyColumn {
-        itemsIndexed(items = employeeList) { index, item ->
-            EmployeeItem(employee=item)
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier=Modifier
+            .fillMaxSize()
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .weight(0.1f)
+                .padding(4.dp)
+                .fillMaxWidth(0.8f)
+                .border(border= BorderStroke(1.dp, Color.Black))
+        ) {
+            TableCell("Nombre", 1F)
+            TableCell("Rol", 1F)
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .weight(0.9f)
+                .padding(4.dp)
+                .fillMaxWidth()
+        ) {
+            LazyColumn {
+                itemsIndexed(items = employeeList) { index, item ->
+                    EmployeeItem(employee = item)
+                }
+            }
         }
     }
 }
 
-
 @Composable
-fun Employees(modifier: Modifier = Modifier, viewModel: MainViewModel, employeeList: List<Employee>) {
-    JetpackComposeMVVMRetrofitAndRecyclerviewTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(color = MaterialTheme.colors.background) {
-            EmployeeList(employeeList = employeeList)
-        }
+fun Employees(viewModel: MainViewModel) {
+    LaunchedEffect(Unit){
+        viewModel.getEmployeeList()
+        viewModel.setCurrentScreen(Screens.DrawerScreens.Employees)
     }
-    viewModel.setCurrentScreen(Screens.DrawerScreens.Employees)
+    val employeeList by viewModel.employeeListResponse.collectAsState()
+    EmployeeList(employeeList = employeeList)
+    //Wrapper Response - Resource
 }
