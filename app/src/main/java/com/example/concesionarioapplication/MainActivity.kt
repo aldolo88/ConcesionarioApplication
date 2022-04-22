@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -94,10 +93,9 @@ fun NavigationHost(navController: NavController, viewModel: MainViewModel) {
         composable(Screens.DrawerScreens.Home.route) { Home(viewModel = viewModel) }
         composable(Screens.DrawerScreens.Account.route) { Account(viewModel = viewModel) }
         composable(Screens.DrawerScreens.Help.route) { Help(viewModel = viewModel)}
-        composable(Screens.DrawerScreens.Employees.route) {
-            viewModel.getEmployeeList()
-            Employees(viewModel = viewModel, employeeList = viewModel.employeeListResponse) }
+        composable(Screens.DrawerScreens.Employees.route) { Employees(viewModel = viewModel) }
     }
+    //ver funciones lambda para poder navegar entre pantallas a futuro
 }
 
 @Preview(showBackground = true)

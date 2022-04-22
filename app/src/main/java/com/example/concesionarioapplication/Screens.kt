@@ -6,17 +6,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.concesionarioapplication.ui.theme.JetpackComposeMVVMRetrofitAndRecyclerviewTheme
 
 sealed class Screens(val route: String, val title: String) {
 
@@ -96,8 +94,6 @@ fun EmployeeItem(employee: Employee) {
     }
 }
 
-
-
 @Composable
 fun EmployeeList(employeeList: List<Employee>) {
     Column(
@@ -110,7 +106,7 @@ fun EmployeeList(employeeList: List<Employee>) {
             modifier = Modifier
                 .weight(0.1f)
                 .padding(4.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(0.8f)
                 .border(border= BorderStroke(1.dp, Color.Black))
         ) {
             TableCell("Nombre", 1F)
@@ -132,14 +128,13 @@ fun EmployeeList(employeeList: List<Employee>) {
     }
 }
 
-
 @Composable
-fun Employees(modifier: Modifier = Modifier, viewModel: MainViewModel, employeeList: List<Employee>) {
-    JetpackComposeMVVMRetrofitAndRecyclerviewTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(color = MaterialTheme.colors.background) {
-            EmployeeList(employeeList = employeeList)
-        }
+fun Employees(viewModel: MainViewModel) {
+    LaunchedEffect(Unit){
+        viewModel.getEmployeeList()
+        viewModel.setCurrentScreen(Screens.DrawerScreens.Employees)
     }
-    viewModel.setCurrentScreen(Screens.DrawerScreens.Employees)
+    val employeeList by viewModel.employeeListResponse.collectAsState()
+    EmployeeList(employeeList = employeeList)
+    //Wrapper Response - Resource
 }
